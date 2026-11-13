@@ -79,7 +79,8 @@ try {
 ```
 
 Common error codes:
-- `-1401`: User denied permission
+- `-201`: User refused (`authorize`, `followOA`)
+- `-1401`: User denied name/avatar (`getUserInfo`)
 - `-1`: Unknown error
 
 ## Permission Notes

@@ -5,8 +5,17 @@ Request permission for sensitive data.
 ```js
 import { authorize } from "zmp-sdk/apis";
 
-await authorize({ scopes: ["scope.userInfo", "scope.userPhonenumber"] });
+try {
+  const granted = await authorize({ scopes: ["scope.userInfo", "scope.userPhonenumber"] });
+  // granted: { "scope.userInfo": true, "scope.userPhonenumber": false }
+} catch (error) {
+  if (error.code === -201) {
+    // User refused the permission dialog
+  }
+}
 ```
+
+Call `authorize` only from a user action (a tap), not when a screen opens.
 
 Scopes:
 - `scope.userInfo` - Name & avatar
@@ -34,7 +43,7 @@ const { userInfo } = await getUserInfo({
 // userInfo: { id, name, avatar, followedOA, idByOA, isSensitive }
 ```
 
-Handle permission denied:
+Handle permission denied (`-1401` is specific to `getUserInfo`; `authorize` and `followOA` use `-201`):
 ```js
 try {
   const { userInfo } = await getUserInfo();
@@ -46,11 +55,16 @@ try {
 ```
 
 ## getPhoneNumber
-Get user phone number (requires permission).
+Get a one-time token for the user's phone number (requires `scope.userPhonenumber`).
+The number itself is not returned to the Mini App: `number` is deprecated.
 ```js
-import { getPhoneNumber } from "zmp-sdk/apis";
+import { getPhoneNumber, getAccessToken } from "zmp-sdk/apis";
 
-const { number } = await getPhoneNumber({});
+const { token } = await getPhoneNumber({});
+const accessToken = await getAccessToken({});
+// Send both to your server. The server calls Zalo's Open API
+// (https://graph.zalo.me/v2.0/me/info with headers access_token, code=token, secret_key)
+// to read the number. The token works once and expires after 2 minutes.
 ```
 
 ## getAccessToken

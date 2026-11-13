@@ -7,12 +7,20 @@ Prompt user to follow/unfollow OA.
 ```js
 import { followOA, unfollowOA } from "zmp-sdk/apis";
 
-await followOA({ oaId: "your-oa-id" });
-await unfollowOA({ oaId: "your-oa-id" });
+try {
+  await followOA({ id: "your-oa-id" });
+} catch (error) {
+  if (error.code === -201) {
+    // User declined to follow
+  }
+}
+await unfollowOA({ id: "your-oa-id" });
 ```
 
+Check whether the user already follows with `getUserInfo().userInfo.followedOA`.
+
 ### interactOA
-Open OA interaction options.
+Open OA interaction options. Note: this one takes `oaId`, unlike `followOA` / `viewOAQr`.
 ```js
 import { interactOA } from "zmp-sdk/apis";
 
@@ -24,7 +32,7 @@ Display OA QR code.
 ```js
 import { viewOAQr } from "zmp-sdk/apis";
 
-viewOAQr({ oaId: "your-oa-id" });
+viewOAQr({ id: "your-oa-id" });
 ```
 
 ## Chat & Social

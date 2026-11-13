@@ -5,6 +5,9 @@ description: Build Zalo Mini Apps - lightweight web apps running inside Zalo sup
 
 # Zalo Mini App Development
 
+> API signatures here were checked against `zmp-sdk` 2.53.4. When your project pins another
+> version, its typings (`node_modules/zmp-sdk/apis/index.d.ts`) are the source of truth.
+
 Build Mini Apps for the Zalo platform using React, ZaUI components, and Zalo SDK APIs.
 
 ## Quick Start
@@ -52,6 +55,12 @@ import { getUserInfo, authorize } from "zmp-sdk/apis";
 - [react-best-practices.md](./references/react-best-practices.md) - Waterfalls, bundle size, re-renders, JS performance
 
 ## Common Patterns
+
+### Get Phone Number (server exchanges the token)
+```js
+const { token } = await getPhoneNumber({});
+// send token + getAccessToken() to your server; never trust a number typed by the client
+```
 
 ### Get User Info
 ```js
